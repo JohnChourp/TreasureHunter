@@ -1,7 +1,10 @@
 package org.codegrinders.treasure_hunter.configuration;
 
 
+import org.codegrinders.treasure_hunter.repository.UserRepository;
+import org.codegrinders.treasure_hunter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import static org.codegrinders.treasure_hunter.configuration.UserRoles.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -18,19 +22,23 @@ import java.util.concurrent.TimeUnit;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    UserService userService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/user/").permitAll()
-                .antMatchers("/user/", "/puzzle/", "/marker/").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/**").permitAll()
+                .antMatchers("/user/**", "/puzzle/", "/marker/").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login").permitAll()
                 .defaultSuccessUrl("/welcome", true)
+                .failureUrl("/login?error=true")
                 .and()
                 .rememberMe()
                 .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21));
@@ -42,7 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
                 .withUser("admin")
                 .password(passwordEncoder().encode("1234"))
-                .roles("ADMIN");
+                .roles(ADMIN.name());
     }
 
     @Bean
