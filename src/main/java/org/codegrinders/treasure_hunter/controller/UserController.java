@@ -1,6 +1,7 @@
 package org.codegrinders.treasure_hunter.controller;
 
 import org.codegrinders.treasure_hunter.model.User;
+import org.codegrinders.treasure_hunter.gamePlay.Players;
 import org.codegrinders.treasure_hunter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,13 @@ public class UserController {
     @GetMapping(value = "/leaderboard")
     public List<User> findAllByOrderByPointsDesc() {
         return userService.findAllByOrderByPointsDesc();
+    }
+
+    @PostMapping(value = "/logged")
+    public User getLoggedUser(@RequestBody User user){
+        Players.players.add(user);
+
+        return user;
     }
 
     @ResponseStatus(HttpStatus.FOUND)
