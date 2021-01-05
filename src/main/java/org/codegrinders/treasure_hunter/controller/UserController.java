@@ -17,6 +17,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private Players players;
+
     @GetMapping(value = "/")
     public List<User> getAllUsers() {
         return userService.findAll();
@@ -29,9 +32,14 @@ public class UserController {
 
     @PostMapping(value = "/logged")
     public User getLoggedUser(@RequestBody User user){
-        Players.players.add(user);
+        players.addPlayer(user);
 
         return user;
+    }
+
+    @GetMapping(value = "/online")
+    public List<User> onlinePlayers(){
+        return players.getPlayers();
     }
 
     @ResponseStatus(HttpStatus.FOUND)

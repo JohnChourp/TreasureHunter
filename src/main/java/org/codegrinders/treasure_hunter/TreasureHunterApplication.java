@@ -1,5 +1,6 @@
 package org.codegrinders.treasure_hunter;
 
+import org.codegrinders.treasure_hunter.gamePlay.Game;
 import org.codegrinders.treasure_hunter.model.Marker;
 import org.codegrinders.treasure_hunter.model.Puzzle;
 import org.codegrinders.treasure_hunter.model.User;
@@ -28,6 +29,9 @@ public class TreasureHunterApplication implements CommandLineRunner {
     @Autowired
     private MarkerRepository markerRepository;
 
+    @Autowired
+    private Game game;
+
     @Override
     public void run(String... args) {
 
@@ -50,6 +54,9 @@ public class TreasureHunterApplication implements CommandLineRunner {
         markerRepository.save(new Marker("1", 41.07634, 23.55451,"library","easy", puzzleRepository.findAll().get(0).getId(),true));
         markerRepository.save(new Marker("2", 41.07457, 23.55395,"canteen","medium", puzzleRepository.findAll().get(1).getId(),true));
         markerRepository.save(new Marker("3", 41.07637, 23.55309,"Management building","hard", puzzleRepository.findAll().get(2).getId(),true));
+
+        game.initLists();
+
     }
 
 }
